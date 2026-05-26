@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>&#29694;&#22580;&#12479;&#12483;&#12503;&#12521;&#12483;&#12471;&#12517;</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game" aria-label="Genba Tap Rush">
+      <header class="hud">
+        <div>
+          <h1>&#29694;&#22580;&#12479;&#12483;&#12503;&#12521;&#12483;&#12471;&#12517;</h1>
+          <p>&#20809;&#12387;&#12383;&#37336;&#12434;&#12289;&#30701;&#26178;&#38291;&#12391;&#25171;&#12385;&#12414;&#12367;&#12428;</p>
+        </div>
+        <div class="meters">
+          <span>TIME <strong id="time">20.0</strong></span>
+          <span>SCORE <strong id="score">0</strong></span>
+          <span>COMBO <strong id="combo">0</strong></span>
+        </div>
+      </header>
+
+      <section id="field" class="field" aria-label="Play area">
+        <div class="sky" aria-hidden="true"><span></span></div>
+        <div class="beam beam-one" aria-hidden="true"></div>
+        <div class="beam beam-two" aria-hidden="true"></div>
+
+        <button id="target" class="target" type="button" aria-label="Tap target" disabled>
+          <span class="ring"></span>
+          <span class="nail"></span>
+          <strong>TAP</strong>
+        </button>
+
+        <div id="floatLayer" class="float-layer" aria-hidden="true"></div>
+
+        <div id="startPanel" class="panel">
+          <p class="label">1 Play 10-30 sec</p>
+          <h2>&#30701;&#12367;&#29105;&#12367;&#12289;&#29694;&#22580;&#12434;&#20181;&#19978;&#12370;&#12427;</h2>
+          <p>&#30340;&#12384;&#12369;&#12434;&#36899;&#32154;&#12479;&#12483;&#12503;&#12290;&#12467;&#12531;&#12508;&#12364;&#32154;&#12367;&#12392;&#12501;&#12451;&#12540;&#12496;&#12540;&#12391;&#24471;&#28857;2&#20493;&#12290;</p>
+          <div class="durations">
+            <button class="duration" type="button" data-time="10">10&#31186;</button>
+            <button class="duration selected" type="button" data-time="20">20&#31186;</button>
+            <button class="duration" type="button" data-time="30">30&#31186;</button>
+          </div>
+          <button id="start" class="main-button" type="button">&#12473;&#12479;&#12540;&#12488;</button>
+          <button id="soundToggle" class="sound-button" type="button">&#38899; ON</button>
+          <p class="best">BEST <strong id="best">0</strong></p>
+          <section class="ranking" aria-label="Top 10 ranking">
+            <h3>TOP 10</h3>
+            <ol id="topList"></ol>
+          </section>
+        </div>
+
+        <div id="resultPanel" class="panel result" hidden>
+          <p class="label">RESULT</p>
+          <h2 id="resultTitle">&#12362;&#12388;&#12363;&#12428;&#12373;&#12414;</h2>
+          <p id="resultScore" class="big-score">0 &#28857;</p>
+          <p id="resultText">&#12418;&#12358;&#19968;&#22238;&#12420;&#12427;&#12392;&#12289;&#12384;&#12356;&#12383;&#12356;&#20280;&#12403;&#12414;&#12377;&#12290;</p>
+          <section class="ranking" aria-label="Top 10 ranking result">
+            <h3>TOP 10</h3>
+            <ol id="resultTopList"></ol>
+          </section>
+          <button id="retry" class="main-button" type="button">&#12418;&#12358;&#19968;&#22238;</button>
+          <button id="backHome" class="sound-button" type="button">&#12373;&#12356;&#12375;&#12423;&#12395;&#12418;&#12393;&#12427;</button>
+        </div>
+      </section>
+
+      <footer class="status">
+        <div>
+          <span>FEVER</span>
+          <strong id="feverText">0%</strong>
+          <div class="bar"><i id="feverBar"></i></div>
+        </div>
+        <p id="message">&#12473;&#12479;&#12540;&#12488;&#12434;&#25276;&#12375;&#12390;&#38283;&#22987;&#12290;&#38899;&#12364;&#20986;&#12414;&#12377;&#12290;</p>
+      </footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>
