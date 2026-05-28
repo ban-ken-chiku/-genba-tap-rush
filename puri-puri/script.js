@@ -26,6 +26,7 @@ const gravity = 0.62;
 const gameSeconds = 45;
 
 const input = { left: false, right: false };
+const pointerControl = { active: false, id: null, targetX: null, lastX: null, moved: false };
 let mode = "title";
 let lastTime = 0;
 let spawnTimer = 0;
@@ -64,7 +65,7 @@ jumpButton.addEventListener("pointerdown", (event) => {
   event.preventDefault();
   jumpButton.setPointerCapture?.(event.pointerId);
   jumpButton.classList.add("is-down");
-  jump();
+  requestJump();
 });
 jumpButton.addEventListener("pointerup", (event) => {
   event.preventDefault();
@@ -89,13 +90,18 @@ document.addEventListener(
   { passive: false }
 );
 
+canvas.addEventListener("pointerdown", handleGamePointerDown);
+canvas.addEventListener("pointermove", handleGamePointerMove);
+canvas.addEventListener("pointerup", handleGamePointerUp);
+canvas.addEventListener("pointercancel", handleGamePointerUp);
+
 window.addEventListener("keydown", (event) => {
   if (event.key === "ArrowLeft") input.left = true;
   if (event.key === "ArrowRight") input.right = true;
   if (event.code === "Space" || event.key === "ArrowUp") {
     event.preventDefault();
     if (mode === "title") startGame();
-    else if (mode === "playing") jump();
+    else if (mode === "playing") requestJump();
   }
 });
 
@@ -135,6 +141,44 @@ function bindHold(button, key) {
     input[key] = false;
     button.classList.remove("is-down");
   });
+}
+
+function handleGamePointerDown(event) {
+  if (mode !== "playing") return;
+  event.preventDefault();
+  canvas.setPointerCapture?.(event.pointerId);
+  const point = canvasPoint(event);
+  pointerControl.active = true;
+  pointerControl.id = event.pointerId;
+  pointerControl.targetX = point.x;
+  pointerControl.lastX = point.x;
+  pointerControl.moved = false;
+  requestJump();
+}
+
+function handleGamePointerMove(event) {
+  if (mode !== "playing" || !pointerControl.active || pointerControl.id !== event.pointerId) return;
+  event.preventDefault();
+  const point = canvasPoint(event);
+  if (Math.abs(point.x - pointerControl.lastX) > 4) pointerControl.moved = true;
+  pointerControl.targetX = point.x;
+  pointerControl.lastX = point.x;
+}
+
+function handleGamePointerUp(event) {
+  if (pointerControl.id !== event.pointerId) return;
+  event.preventDefault();
+  canvas.releasePointerCapture?.(event.pointerId);
+  pointerControl.active = false;
+  pointerControl.id = null;
+}
+
+function canvasPoint(event) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: ((event.clientX - rect.left) / rect.width) * W,
+    y: ((event.clientY - rect.top) / rect.height) * H,
+  };
 }
 
 function resizeGame() {
@@ -206,6 +250,9 @@ function createPlayer() {
     mood: "normal",
     moodTimer: 0,
     squish: 0,
+    grounded: true,
+    coyote: 0.12,
+    jumpBuffer: 0,
   };
 }
 
@@ -263,11 +310,25 @@ function updateBackground(dt) {
 function updatePlayer(dt) {
   const move = (input.right ? 1 : 0) - (input.left ? 1 : 0);
   const speedBoost = lastSpurt ? 1.2 : 1;
-  player.vx += move * 2310 * speedBoost * dt;
-  player.vx *= 0.82;
-  player.x += player.vx * dt;
+  player.jumpBuffer = Math.max(0, player.jumpBuffer - dt);
+  player.coyote = player.grounded ? 0.13 : Math.max(0, player.coyote - dt);
+
+  if (pointerControl.active && pointerControl.targetX != null) {
+    const diff = pointerControl.targetX - player.x;
+    const follow = Math.min(1, dt * 18);
+    player.vx = diff * 10.5 * follow;
+    player.x += diff * follow;
+    if (Math.abs(diff) > 4) player.facing = diff > 0 ? 1 : -1;
+  } else {
+    player.vx += move * 3100 * speedBoost * dt;
+    player.vx *= 0.76;
+    player.x += player.vx * dt;
+    if (move) player.facing = move;
+  }
+
   player.x = clamp(player.x, 46, W - 46);
-  if (move) player.facing = move;
+
+  if (player.jumpBuffer > 0) tryBufferedJump();
 
   player.vy += gravity * 60 * dt;
   player.y += player.vy * 60 * dt;
@@ -280,7 +341,12 @@ function updatePlayer(dt) {
     player.y = floorY;
     player.vy = 0;
     player.jumps = 0;
+    player.grounded = true;
     player.doubleSpin = 0;
+    player.coyote = 0.13;
+    if (player.jumpBuffer > 0) tryBufferedJump();
+  } else {
+    player.grounded = false;
   }
 
   player.spin += player.doubleSpin * dt;
@@ -290,21 +356,36 @@ function updatePlayer(dt) {
   player.squish = Math.max(0, player.squish - dt * 1.8);
 }
 
-function jump() {
-  if (mode !== "playing" || player.jumps >= 2) return;
-  if (player.jumps === 0) {
+function requestJump() {
+  if (mode !== "playing") return;
+  player.jumpBuffer = 0.16;
+  tryBufferedJump();
+}
+
+function tryBufferedJump() {
+  if (mode !== "playing" || player.jumpBuffer <= 0) return;
+  const canFirstJump = player.jumps === 0 && (player.grounded || player.coyote > 0);
+  const canDoubleJump = player.jumps === 1 && !player.grounded;
+  if (!canFirstJump && !canDoubleJump) return;
+
+  if (canFirstJump) {
     player.vy = -12.2;
     player.squish = 0.24;
     addEffect(player.x, player.y + 64, "jump");
+    player.jumps = 1;
+    player.grounded = false;
+    player.coyote = 0;
   } else {
-    player.vy = -11.2;
-    player.doubleSpin = 1.15;
+    player.vy = -12.0;
+    player.doubleSpin = 1.35;
     player.spin = 0;
     player.mood = "fever";
     player.moodTimer = 0.45;
     addEffect(player.x, player.y + 20, "rainbow");
+    player.jumps = 2;
+    player.vx *= 1.08;
   }
-  player.jumps += 1;
+  player.jumpBuffer = 0;
 }
 
 function spawnItem() {
