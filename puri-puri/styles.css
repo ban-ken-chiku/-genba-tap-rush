@@ -477,19 +477,34 @@ h1 {
 }
 
 @media (max-width: 620px) and (orientation: portrait) {
+  body {
+    overflow: hidden;
+  }
+
   .app {
+    min-height: 100dvh;
     justify-content: start;
   }
 
   .game-shell {
+    height: 100dvh;
     margin-top: 0;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: auto;
   }
 
   body.title-active .game-shell,
   body.result-active .game-shell {
     height: 100dvh;
     aspect-ratio: auto;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .notes {
+    display: none;
   }
 
   .title-copy,
@@ -517,6 +532,7 @@ h1 {
   .hud {
     grid-template-columns: 1fr 76px 68px;
     gap: 5px;
+    top: max(10px, env(safe-area-inset-top));
   }
 
   .hud div {

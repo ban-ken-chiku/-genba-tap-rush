@@ -18,9 +18,9 @@ const resultMessage = document.querySelector("#resultMessage");
 const lastSpurtText = document.querySelector("#lastSpurtText");
 const topScoresList = document.querySelector("#topScoresList");
 
-const W = canvas.width;
-const H = canvas.height;
-const groundY = 440;
+let W = canvas.width;
+let H = canvas.height;
+let groundY = 440;
 const gravity = 0.62;
 const gameSeconds = 45;
 
@@ -82,6 +82,10 @@ window.addEventListener("keyup", (event) => {
   if (event.key === "ArrowRight") input.right = false;
 });
 
+resizeGame();
+window.addEventListener("resize", resizeGame);
+window.addEventListener("orientationchange", () => window.setTimeout(resizeGame, 180));
+
 initTitle();
 requestAnimationFrame(loop);
 
@@ -103,6 +107,25 @@ function bindHold(button, key) {
     input[key] = false;
     button.classList.remove("is-down");
   });
+}
+
+function resizeGame() {
+  const portrait = window.matchMedia("(max-width: 620px) and (orientation: portrait)").matches;
+  const nextW = portrait ? 540 : 960;
+  const nextH = portrait ? 860 : 540;
+  if (canvas.width === nextW && canvas.height === nextH) return;
+
+  const oldW = W || nextW;
+  W = nextW;
+  H = nextH;
+  groundY = portrait ? H - 124 : 440;
+  canvas.width = W;
+  canvas.height = H;
+
+  if (player) {
+    player.x = clamp((player.x / oldW) * W, 46, W - 46);
+    player.y = Math.min(player.y, groundY - player.height * 0.72);
+  }
 }
 
 function initTitle() {
