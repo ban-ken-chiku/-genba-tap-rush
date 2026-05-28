@@ -269,89 +269,10 @@ h1 {
   color: #6f5f78;
 }
 
-.guide-poop {
-  position: relative;
+.guide-icon {
+  width: 54px;
+  height: 54px;
   display: block;
-  width: 48px;
-  height: 40px;
-  border: 3px solid #3a283e;
-  border-radius: 48% 52% 42% 58% / 42% 42% 58% 56%;
-  background: #b8753f;
-  box-shadow: inset -4px -5px 0 rgba(80, 44, 26, 0.12), 0 0 10px rgba(255, 209, 154, 0.42);
-}
-
-.guide-poop::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -13px;
-  width: 27px;
-  height: 19px;
-  border: 3px solid #3a283e;
-  border-bottom: 0;
-  border-radius: 999px 999px 4px 4px;
-  background: inherit;
-  transform: translateX(-50%);
-}
-
-.guide-poop::after {
-  content: "";
-  position: absolute;
-  left: 8px;
-  top: 12px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 22px 0 0 #fff, 3px 1px 0 3px #3a283e, 25px 1px 0 3px #3a283e;
-}
-
-.guide-poop i::before,
-.guide-poop i::after {
-  content: "";
-  position: absolute;
-  top: 12px;
-  width: 20px;
-  height: 16px;
-  border: 3px solid #3a283e;
-  border-bottom: 0;
-  border-radius: 999px 999px 0 0;
-  background: inherit;
-}
-
-.guide-poop i::before {
-  left: -15px;
-  transform: rotate(-42deg);
-}
-
-.guide-poop i::after {
-  right: -15px;
-  transform: rotate(42deg);
-}
-
-.guide-card.gold .guide-poop {
-  background: #ffc928;
-}
-
-.guide-card.rainbow .guide-poop {
-  background: linear-gradient(135deg, #ff8fb6, #fff176, #7ee7d0, #8ec8ff);
-  box-shadow: 0 0 18px rgba(126, 231, 208, 0.95), 0 0 24px rgba(255, 143, 182, 0.72);
-}
-
-.guide-card.rainbow .guide-poop {
-  outline: 3px solid rgba(255, 255, 255, 0.72);
-}
-
-.guide-card.thorn .guide-poop {
-  background: #67556f;
-}
-
-.guide-card.sticky .guide-poop {
-  background: #8fae64;
-}
-
-.guide-card.germ .guide-poop {
-  background: #8a718d;
 }
 
 .main-button {
@@ -607,41 +528,9 @@ h1 {
     padding: 4px 3px;
   }
 
-  .guide-poop {
-    width: 38px;
-    height: 31px;
-    border-width: 2px;
-  }
-
-  .guide-poop::before {
-    top: -10px;
-    width: 21px;
-    height: 14px;
-    border-width: 2px;
-  }
-
-  .guide-poop::after {
-    left: 7px;
-    top: 10px;
-    width: 7px;
-    height: 7px;
-    box-shadow: 17px 0 0 #fff, 2px 1px 0 2px #3a283e, 19px 1px 0 2px #3a283e;
-  }
-
-  .guide-poop i::before,
-  .guide-poop i::after {
-    top: 9px;
-    width: 15px;
-    height: 12px;
-    border-width: 2px;
-  }
-
-  .guide-poop i::before {
-    left: -11px;
-  }
-
-  .guide-poop i::after {
-    right: -11px;
+  .guide-icon {
+    width: 42px;
+    height: 42px;
   }
 
   .guide-card strong,

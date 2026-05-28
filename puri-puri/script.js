@@ -1,5 +1,5 @@
 const canvas = document.querySelector("#gameCanvas");
-const ctx = canvas.getContext("2d");
+let ctx = canvas.getContext("2d");
 
 const titleScreen = document.querySelector("#titleScreen");
 const resultScreen = document.querySelector("#resultScreen");
@@ -17,6 +17,7 @@ const resultRank = document.querySelector("#resultRank");
 const resultMessage = document.querySelector("#resultMessage");
 const lastSpurtText = document.querySelector("#lastSpurtText");
 const topScoresList = document.querySelector("#topScoresList");
+const guideIcons = document.querySelectorAll(".guide-icon");
 
 let W = canvas.width;
 let H = canvas.height;
@@ -108,6 +109,7 @@ window.addEventListener("resize", resizeGame);
 window.addEventListener("orientationchange", () => window.setTimeout(resizeGame, 180));
 
 initTitle();
+drawGuideIcons();
 requestAnimationFrame(loop);
 
 function bindHold(button, key) {
@@ -649,6 +651,27 @@ function drawPuriItem(item) {
   if (type.kind === "good") drawPuriSparkles(s);
 
   drawItemFace(type.kind);
+}
+
+function drawGuideIcons() {
+  guideIcons.forEach((icon) => {
+    const type = itemTypes.find((candidate) => candidate.name === icon.dataset.guide);
+    if (!type) return;
+    const guideCtx = icon.getContext("2d");
+    guideCtx.clearRect(0, 0, icon.width, icon.height);
+    guideCtx.save();
+    guideCtx.translate(icon.width / 2, icon.height / 2 + 5);
+    guideCtx.scale(0.92, 0.92);
+    drawPuriItemWithContext(guideCtx, { type, size: 58 });
+    guideCtx.restore();
+  });
+}
+
+function drawPuriItemWithContext(targetCtx, item) {
+  const original = ctx;
+  ctx = targetCtx;
+  drawPuriItem(item);
+  ctx = original;
 }
 
 function poopBlob(s) {
