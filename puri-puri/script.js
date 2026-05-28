@@ -61,11 +61,32 @@ bindHold(leftButton, "left");
 bindHold(rightButton, "right");
 jumpButton.addEventListener("pointerdown", (event) => {
   event.preventDefault();
+  jumpButton.setPointerCapture?.(event.pointerId);
   jumpButton.classList.add("is-down");
   jump();
 });
-jumpButton.addEventListener("pointerup", () => jumpButton.classList.remove("is-down"));
-jumpButton.addEventListener("pointerleave", () => jumpButton.classList.remove("is-down"));
+jumpButton.addEventListener("pointerup", (event) => {
+  event.preventDefault();
+  jumpButton.releasePointerCapture?.(event.pointerId);
+  jumpButton.classList.remove("is-down");
+});
+jumpButton.addEventListener("pointerleave", (event) => {
+  event.preventDefault();
+  jumpButton.classList.remove("is-down");
+});
+jumpButton.addEventListener("pointercancel", (event) => {
+  event.preventDefault();
+  jumpButton.classList.remove("is-down");
+});
+
+document.addEventListener("contextmenu", (event) => event.preventDefault());
+document.addEventListener(
+  "touchmove",
+  (event) => {
+    if (mode === "playing") event.preventDefault();
+  },
+  { passive: false }
+);
 
 window.addEventListener("keydown", (event) => {
   if (event.key === "ArrowLeft") input.left = true;
@@ -92,18 +113,23 @@ requestAnimationFrame(loop);
 function bindHold(button, key) {
   button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
+    button.setPointerCapture?.(event.pointerId);
     input[key] = true;
     button.classList.add("is-down");
   });
-  button.addEventListener("pointerup", () => {
+  button.addEventListener("pointerup", (event) => {
+    event.preventDefault();
+    button.releasePointerCapture?.(event.pointerId);
     input[key] = false;
     button.classList.remove("is-down");
   });
-  button.addEventListener("pointerleave", () => {
+  button.addEventListener("pointerleave", (event) => {
+    event.preventDefault();
     input[key] = false;
     button.classList.remove("is-down");
   });
-  button.addEventListener("pointercancel", () => {
+  button.addEventListener("pointercancel", (event) => {
+    event.preventDefault();
     input[key] = false;
     button.classList.remove("is-down");
   });
