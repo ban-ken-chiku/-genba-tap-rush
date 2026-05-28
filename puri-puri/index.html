@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ぷりぷりパニック</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app" aria-label="ぷりぷりパニック">
+      <section class="game-shell">
+        <canvas id="gameCanvas" width="960" height="540" aria-label="ゲーム画面"></canvas>
+
+        <section id="titleScreen" class="overlay title-screen">
+          <div class="title-copy">
+            <h1>ぷりぷりパニック</h1>
+            <p>モチュを動かして、空からふるぷりエネルギーをキャッチしよう。</p>
+            <div class="item-guide" aria-label="ふってくるアイテム">
+              <div class="guide-card good normal"><span class="guide-poop"><i></i></span><strong>にこぷり</strong><small>+100</small></div>
+              <div class="guide-card good gold"><span class="guide-poop"><i></i></span><strong>ゴールド</strong><small>+500</small></div>
+              <div class="guide-card good rainbow"><span class="guide-poop"><i></i></span><strong>レインボー</strong><small>+1000</small></div>
+              <div class="guide-card bad thorn"><span class="guide-poop"><i></i></span><strong>トゲぷり</strong><small>-1 LIFE</small></div>
+              <div class="guide-card bad sticky"><span class="guide-poop"><i></i></span><strong>ネバぷり</strong><small>-100</small></div>
+              <div class="guide-card bad germ"><span class="guide-poop"><i></i></span><strong>バイキン</strong><small>-1 LIFE</small></div>
+            </div>
+            <button id="startButton" class="main-button" type="button">スタート</button>
+          </div>
+        </section>
+
+        <section id="resultScreen" class="overlay result-screen" hidden>
+          <div class="result-card">
+            <p class="eyebrow">RESULT</p>
+            <h2 id="resultRank">ランク B</h2>
+            <p class="score-label">スコア</p>
+            <strong id="finalScore">0</strong>
+            <p id="resultMessage">もう一回あそんでみよう。</p>
+            <section class="top-scores" aria-label="トップ3スコア">
+              <h3>TOP 3</h3>
+              <ol id="topScoresList"></ol>
+            </section>
+            <button id="retryButton" class="main-button" type="button">もう一度あそぶ</button>
+            <button id="backTitleButton" class="sub-button" type="button">タイトルにもどる</button>
+          </div>
+        </section>
+
+        <div class="hud" aria-label="ゲーム情報">
+          <div>SCORE <strong id="scoreText">0</strong></div>
+          <div class="time">TIME <strong id="timeText">45</strong></div>
+          <div>LIFE <strong id="lifeText">3</strong></div>
+        </div>
+        <div id="lastSpurtText" class="last-spurt" hidden>ラストスパート!</div>
+
+        <div class="controls" aria-label="操作ボタン">
+          <button id="leftButton" class="control" type="button" aria-label="左へ移動">←</button>
+          <button id="jumpButton" class="control jump" type="button" aria-label="ジャンプ">JUMP</button>
+          <button id="rightButton" class="control" type="button" aria-label="右へ移動">→</button>
+        </div>
+      </section>
+
+      <aside class="notes">
+        <h2>操作</h2>
+        <p>スマホは下のボタン、PCは ← → と Space。空中でもう一度JUMPで二段ジャンプ。</p>
+        <h2>アイテム</h2>
+        <p>にこぷり +100 / ゴールド +500 / レインボー +1000 / トゲ・ネバ・バイキンは減点またはライフ減少。</p>
+      </aside>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>

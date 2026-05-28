@@ -25,7 +25,10 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  fs.readFile(filePath, (error, data) => {
+  fs.stat(filePath, (statError, stat) => {
+    const readablePath = !statError && stat.isDirectory() ? path.join(filePath, "index.html") : filePath;
+
+    fs.readFile(readablePath, (error, data) => {
     if (error) {
       response.writeHead(404);
       response.end("not found");
@@ -33,10 +36,11 @@ const server = http.createServer((request, response) => {
     }
 
     response.writeHead(200, {
-      "Content-Type": types[path.extname(filePath)] || "application/octet-stream",
+      "Content-Type": types[path.extname(readablePath)] || "application/octet-stream",
       "Cache-Control": "no-store",
     });
     response.end(data);
+  });
   });
 });
 
