@@ -26,7 +26,7 @@ const gravity = 0.62;
 const gameSeconds = 45;
 
 const input = { left: false, right: false };
-const pointerControl = { active: false, id: null, targetX: null, lastX: null, moved: false };
+const pointerControl = { active: false, id: null, targetX: null, lastX: null };
 let mode = "title";
 let lastTime = 0;
 let spawnTimer = 0;
@@ -152,7 +152,6 @@ function handleGamePointerDown(event) {
   pointerControl.id = event.pointerId;
   pointerControl.targetX = point.x;
   pointerControl.lastX = point.x;
-  pointerControl.moved = false;
   requestJump();
 }
 
@@ -160,7 +159,6 @@ function handleGamePointerMove(event) {
   if (mode !== "playing" || !pointerControl.active || pointerControl.id !== event.pointerId) return;
   event.preventDefault();
   const point = canvasPoint(event);
-  if (Math.abs(point.x - pointerControl.lastX) > 4) pointerControl.moved = true;
   pointerControl.targetX = point.x;
   pointerControl.lastX = point.x;
 }
@@ -171,6 +169,7 @@ function handleGamePointerUp(event) {
   canvas.releasePointerCapture?.(event.pointerId);
   pointerControl.active = false;
   pointerControl.id = null;
+  pointerControl.targetX = null;
 }
 
 function canvasPoint(event) {
@@ -315,16 +314,20 @@ function updatePlayer(dt) {
 
   if (pointerControl.active && pointerControl.targetX != null) {
     const diff = pointerControl.targetX - player.x;
-    const follow = Math.min(1, dt * 18);
-    player.vx = diff * 10.5 * follow;
-    player.x += diff * follow;
-    if (Math.abs(diff) > 4) player.facing = diff > 0 ? 1 : -1;
+    const deadZone = 14;
+    const maxFollowSpeed = 520 * speedBoost;
+    if (Math.abs(diff) > deadZone) {
+      player.vx = clamp(diff * 4.2, -maxFollowSpeed, maxFollowSpeed);
+      player.facing = diff > 0 ? 1 : -1;
+    } else {
+      player.vx *= 0.55;
+    }
   } else {
     player.vx += move * 3100 * speedBoost * dt;
     player.vx *= 0.76;
-    player.x += player.vx * dt;
     if (move) player.facing = move;
   }
+  player.x += player.vx * dt;
 
   player.x = clamp(player.x, 46, W - 46);
 
